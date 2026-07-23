@@ -1,0 +1,1176 @@
+{
+  "name": "JARVIS Core v1",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1104,
+        544
+      ],
+      "id": "78b24068-e967-4268-91d8-1ac1bc023af8",
+      "name": "Telegram Trigger",
+      "webhookId": "5bf135a5-97b3-47a3-972f-5192a048f1d2",
+      "credentials": {
+        "telegramApi": {
+          "id": "lmT8SIbfm6wk21vr",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "=Ты — Джарвис, персональный ИИ-ассистент Алексея.\n\nВсегда отвечай на русском языке, если пользователь не попросит иначе.\n\nТвоя задача — помогать с программированием, DevOps, автоматизациями, администрированием серверов, разработкой проекта «Джарвис», а также с повседневными задачами.\n\nОтвечай точно, спокойно и лаконично.\n\nЕсли информации недостаточно — задай уточняющий вопрос.\n\nНе придумывай факты. Если чего-то не знаешь — прямо сообщи об этом.\n\nПри объяснении технических тем сначала объясняй идею, затем переходи к реализации.\n\nЕсли существует несколько вариантов решения, кратко опиши их и объясни, почему рекомендуешь конкретный.\n-------------------------\nДОЛГОВРЕМЕННАЯ ПАМЯТЬ ПОЛЬЗОВАТЕЛЯ\n\nНиже может быть предоставлена информация из долговременной памяти пользователя.\n\n{{ $json.memory_context }}\n\nИспользуй эту информацию только в том случае, если она относится к текущему вопросу пользователя.\n\nЕсли блок пустой, проигнорируй его.\n\nНе придумывай факты, которых нет в долговременной памяти."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        1200
+      ],
+      "id": "1ad70d7e-7aaa-4b57-baa6-605827f676ef",
+      "name": "Jarvis"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"save\": {\n      \"type\": \"boolean\"\n    },\n    \"memories\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"category\": {\n            \"type\": \"string\"\n          },\n          \"key\": {\n            \"type\": \"string\"\n          },\n          \"value\": {\n            \"type\": \"string\"\n          },\n          \"memory_text\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"category\",\n          \"key\",\n          \"value\",\n          \"memory_text\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"save\",\n    \"memories\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -608,
+        240
+      ],
+      "id": "1a8acea2-b08b-4056-919b-9bb8f9804044",
+      "name": "Extract Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "49f73d62-eb9d-41d9-b9d8-3801744b695e",
+              "leftValue": "={{ $json.output.save }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -464,
+        48
+      ],
+      "id": "858ff15e-e442-473b-acac-6a29d45abca3",
+      "name": "Should Save Memory?"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -752,
+        240
+      ],
+      "id": "4e35e132-20f2-4b75-be3e-d6de065857d0",
+      "name": "Memory Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jEwCBjLj1laD5Mo3",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        1344
+      ],
+      "id": "eaa73745-ea15-4699-8b19-dd2ff2b918fd",
+      "name": "Jarvis Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jEwCBjLj1laD5Mo3",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.4,
+      "position": [
+        912,
+        848
+      ],
+      "id": "167d602c-2868-4887-a263-2b24eb838f2e",
+      "name": "Jarvis Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    user_id,\n    category,\n    memory_key,\n    memory_value,\n    memory_text,\n    embedding <=> $2::vector AS distance\nFROM user_memory\nWHERE\n    user_id = $1::text\n    AND embedding IS NOT NULL\nORDER BY embedding <=> $2::vector\nLIMIT 20;",
+        "options": {
+          "queryReplacement": "=={{\n[\n  $('Telegram Trigger').item.json.message.chat.id,\n  JSON.stringify($('Generate Query Embedding').item.json.data[0].embedding)\n]\n}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -736,
+        1456
+      ],
+      "id": "15e68e67-87ac-4a9d-b798-c7c1bc77bec7",
+      "name": "Recall Memory",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Ты модуль долговременной памяти AI-ассистента Jarvis.\n\nТвоя задача — определить, содержит ли сообщение пользователя информацию, которую следует сохранить в долговременную память.\n\nЕсли сохранять ничего не нужно, ответь:\n\n{\n  \"save\": false,\n  \"memories\": []\n}\n\nЕсли информацию нужно сохранить, ответь:\n\n{\n  \"save\": true,\n  \"memories\": [\n    {\n      \"category\": \"...\",\n      \"key\": \"...\",\n      \"value\": \"...\",\n      \"memory_text\": \"...\"\n    }\n  ]\n}\n\nПРАВИЛА\n\n1. Из одного сообщения извлекай ВСЕ независимые факты.\n\n2. Каждый факт — отдельный объект памяти.\n\n3. Не придумывай информацию.\nЗапоминай только то, что пользователь сообщил явно.\n\n4. Поле value должно быть коротким.\n\nХорошо:\n\n\"Алексей\"\n\n\"35\"\n\n\"Новороссийск\"\n\n\"type 1\"\n\nПлохо:\n\n\"Меня зовут Алексей и мне 35 лет.\"\n\n5. Поле memory_text должно быть полноценным естественным предложением.\n\nПримеры:\n\n\"Меня зовут Алексей.\"\n\n\"Мне 35 лет.\"\n\n\"Я живу в Новороссийске.\"\n\n\"У меня сахарный диабет 1 типа.\"\n\n\"Я люблю играть на гитаре.\"\n\n6. Используй только категории:\n\nPersonal\nHealth\nFamily\nPets\nPreferences\nWork\nEducation\nProjects\nOther\n\n7. Используй стандартные ключи.\n\nPersonal\n\nname\nage\ncity\ncountry\nlanguage\nprofession\n\nHealth\n\ndiabetes_type\ndiabetes_duration_years\n\nFamily\n\nspouse\nchildren\n\nPets\n\npet_name\npet_type\npet_color\n\nPreferences\n\nhobby\nfavorite_food\nfavorite_movie\nfavorite_music\nfavorite_game\n\nProjects\n\nproject_name\n\n8. Если подходит стандартный ключ — используй его.\n\nНе используй:\n\nwife\ncat_name\ndog_name\nmusic_hobby\ncamping_hobby\n\nИспользуй:\n\nspouse\npet_name\nhobby\n\n9. Если значение данного типа встречается впервые — используй стандартный ключ без номера.\n\nПримеры:\n\npet_name\npet_type\npet_color\nhobby\n\nЕсли значение такого типа уже существует в памяти пользователя, используй следующий свободный номер.\n\nПримеры:\n\npet_name_2\npet_type_2\npet_color_2\n\nhobby_2\nhobby_3\n\n10. Если существует стандартный ключ, никогда не придумывай новый.\n\nНеправильно:\n\nhobby_music\nhobby_guitar\nhobby_outdoor\nwife\ncat_name\n\nПравильно:\n\nhobby_1\nhobby_2\nspouse\npet_name\n\n11. Если подходящего стандартного ключа нет, создай новый короткий ключ в snake_case на английском языке.\n\nПримеры:\n\nfavorite_book\ncar_brand\nbirth_place\n\n12. Всегда возвращай только корректный JSON.\n\nНикакого текста.\nНикаких пояснений.\nНикакого Markdown.\nТолько JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -736,
+        48
+      ],
+      "id": "0ba00e43-cdf5-454c-bd47-e00aba716b72",
+      "name": "Memory Classifier"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        1200
+      ],
+      "id": "e5577c47-0c24-4960-a064-fcb51cc43c32",
+      "name": "Send Reply",
+      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
+      "credentials": {
+        "telegramApi": {
+          "id": "lmT8SIbfm6wk21vr",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"text-embedding-3-small\",\n  \"input\": \"={{ $json.memory_text }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        32,
+        32
+      ],
+      "id": "78ccd834-62b4-4cc7-afff-e948ca52e171",
+      "name": "Generate Memory Embedding",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "FSVMcSm3zRbYw9y7",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"text-embedding-3-small\",\n  \"input\": \"={{ $('Telegram Trigger').item.json.message.text }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1056,
+        1184
+      ],
+      "id": "6e426e88-49d2-4351-ad57-27c5b6d95521",
+      "name": "Generate Query Embedding",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "FSVMcSm3zRbYw9y7",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const memories = $input.all();\n\nconst memoryContext = memories\n  .map(item => item.json.memory_text)\n  .filter(Boolean)\n  .join('\\n');\n\nreturn [\n  {\n    json: {\n      memory_context: memoryContext\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        1200
+      ],
+      "id": "dbd03599-ba35-46d5-a5b8-f101d565ac88",
+      "name": "Build Context"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7990cb57-f6b2-449d-8924-ed57b3e72c3f",
+              "leftValue": "=={{ $('Telegram Trigger').item.json.message.text.toLowerCase() }}",
+              "rightValue": "что.*помни|что.*знаешь.*обо.*мне|что.*обо.*мне.*знаешь",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -880,
+        896
+      ],
+      "id": "c94874af-5b4f-4916-b260-f105a5a25303",
+      "name": "Memory Question?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    category,\n    memory_key,\n    memory_value,\n    created_at,\n    updated_at\nFROM user_memory\nWHERE user_id = $1::text\nORDER BY category, memory_key;",
+        "options": {
+          "queryBatching": "single",
+          "queryReplacement": "=={{ $('Telegram Trigger').item.json.message.chat.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -704,
+        880
+      ],
+      "id": "022b30cb-5888-4d04-b59e-0215f51e4444",
+      "name": "Load All Memory",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const labels = {\n  name: \"👤 Имя\",\n  age: \"🎂 Возраст\",\n  diabetes_type: \"🩺 Диабет\",\n};\n\nconst valueMap = {\n  diabetes_type: {\n    \"type 1 diabetes\": \"1 типа\",\n    \"type 2 diabetes\": \"2 типа\",\n  },\n};\n\nconst lines = [];\nconst other = [];\n\nfor (const item of $input.all()) {\n  const key = item.json.memory_key;\n  const value = item.json.memory_value;\n\n  // Пропускаем пустые записи\n  if (!key || value === undefined || value === null || value === \"\") {\n    continue;\n  }\n\n  let displayValue = value;\n\n  if (valueMap[key] && valueMap[key][value]) {\n    displayValue = valueMap[key][value];\n  }\n\n  if (labels[key]) {\n    lines.push(`${labels[key]}: ${displayValue}`);\n  } else {\n    const safeKey = key.replaceAll(\"_\", \" \");\n    other.push(`• ${safeKey}: ${displayValue}`);\n  }\n}\n\nif (lines.length === 0 && other.length === 0) {\n  return [\n    {\n      json: {\n        reply: \"Пока я ничего о тебе не помню.\",\n      },\n    },\n  ];\n}\n\nlet text = \"Вот что я о тебе помню:\\n\\n\";\n\nif (lines.length) {\n  text += lines.join(\"\\n\");\n}\n\nif (other.length) {\n  text += \"\\n\\n📝 Остальное:\\n\";\n  text += other.join(\"\\n\");\n}\n\nreturn [\n  {\n    json: {\n      reply: text,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        880
+      ],
+      "id": "77bf4c52-0252-4e90-a4ce-5b71396eca51",
+      "name": "Format All Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('Format All Memory').item.json.reply }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        880
+      ],
+      "id": "b80be288-17d0-4a5f-ae96-1902ed101762",
+      "name": "Send Memory Reply",
+      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
+      "credentials": {
+        "telegramApi": {
+          "id": "lmT8SIbfm6wk21vr",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2d3a0ed2-a0fb-49c3-88d6-54e0892be0fe",
+              "leftValue": "=={{ $('Telegram Trigger').item.json.message.text.toLowerCase() }}",
+              "rightValue": "забудь|удали.*памят|не.*помни|forget",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -832,
+        432
+      ],
+      "id": "37b37c93-de3b-4637-99cd-aac19bcd4416",
+      "name": "Forget memory?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM user_memory\nWHERE\n  user_id = '{{ $('Telegram Trigger').item.json.message.chat.id }}'\n    AND category = '{{ $json.category }}'\n    AND memory_key = '{{ $json.key }}'\n\nRETURNING id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -160,
+        400
+      ],
+      "id": "3c4294a0-5b16-4b42-93f6-002fda4c6094",
+      "name": "Delete memory",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Ты отвечаешь только одной JSON-структурой.\n\nТвоя задача — определить, просит ли пользователь удалить информацию из долговременной памяти.\n\nЕсли пользователь ничего не просит удалить, верни:\n\n{\n  \"delete\": false\n}\n\nЕсли пользователь просит удалить информацию, верни:\n\n{\n  \"delete\": true,\n  \"memories\": [\n    {\n      \"category\": \"...\",\n      \"key\": \"...\"\n    }\n  ]\n}\n\nЕсли пользователь просит удалить несколько фактов, добавь несколько объектов в массив \"memories\".\n\nИспользуй только категории:\n\n- Personal\n- Project\n- Health\n\nИспользуй только стандартные ключи памяти.\n\nСтандартные ключи:\n\n- name\n- age\n- city\n- country\n- profession\n- job\n- company\n- hobby\n- goal\n- project\n- language\n- diabetes_type\n\nПравила:\n\n- Если пользователь просит забыть имя → key = \"name\"\n- Если просит забыть возраст → key = \"age\"\n- Если просит забыть диабет, диабет первого типа или диабет 1 типа → key = \"diabetes_type\"\n- Если просит забыть проект → key = \"project\"\n- Если пользователь просит забыть несколько вещей — верни массив memories со всеми найденными объектами.\n- Если подходящего ключа нет — придумай короткий ключ на английском языке в snake_case.\n- Никогда не используй русские названия ключей.\n- Никакого текста вне JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -608,
+        400
+      ],
+      "id": "e6793614-4658-4528-a1d5-fe99fa104d04",
+      "name": "Forget Memory Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -608,
+        576
+      ],
+      "id": "95e7381c-9686-4ffa-8174-a679622519fd",
+      "name": "Forget Memory Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jEwCBjLj1laD5Mo3",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"delete\": {\n      \"type\": \"boolean\"\n    },\n    \"memories\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"category\": {\n            \"type\": \"string\"\n          },\n          \"key\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"category\",\n          \"key\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"delete\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        576
+      ],
+      "id": "3a449537-3bd0-4deb-8bba-371e7096f2b4",
+      "name": "Extract Forget Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('Split Out1').all();\n\nconst labels = {\n  name: \"имя\",\n  age: \"возраст\",\n  city: \"город\",\n  country: \"страну\",\n  profession: \"профессию\",\n  job: \"работу\",\n  company: \"компанию\",\n  hobby: \"хобби\",\n  goal: \"цель\",\n  project: \"проект\",\n  language: \"язык\",\n  diabetes_type: \"диабет первого типа\"\n};\n\nconst deleted = items.map(item => {\n  const key = item.json.key;\n  return labels[key] ?? key;\n});\n\nconst reply = deleted.length === 1\n  ? `Хорошо. Я забыл ${deleted[0]}.`\n  : `Хорошо. Я забыл: ${deleted.join(\", \")}.`;\n\nreturn [\n  {\n    json: {\n      reply\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        400
+      ],
+      "id": "a9f3aa93-c5a0-4702-a0b5-a84e895dd27c",
+      "name": "Build Forget Reply"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('Build Forget Reply').item.json.reply }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        400
+      ],
+      "id": "51b7b237-0704-491c-b99c-47879e104660",
+      "name": "Send Forget Reply",
+      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
+      "credentials": {
+        "telegramApi": {
+          "id": "lmT8SIbfm6wk21vr",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM user_memory\nWHERE memory_key = 'city';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        928,
+        624
+      ],
+      "id": "cbf3f691-cf43-43f6-b9ca-03b76662634e",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const labels = {\n  name: \"👤 Имя\",\n  age: \"🎂 Возраст\",\n};\n\nconst lines = [];\nconst other = [];\n\nfor (const item of $input.all()) {\n  const key = item.json.memory_key;\n  const value = item.json.memory_value;\n\n  // Пропускаем пустые записи\n  if (!key || value === undefined || value === null || value === \"\") {\n    continue;\n  }\n\n  if (labels[key]) {\n    lines.push(`${labels[key]}: ${value}`);\n  } else {\n    other.push(`• ${key}: ${value}`);\n  }\n}\n\nif (lines.length === 0 && other.length === 0) {\n  return [\n    {\n      json: {\n        reply: \"Пока я ничего о тебе не помню.\",\n      },\n    },\n  ];\n}\n\nlet text = \"Вот что я о тебе помню:\\n\\n\";\n\nif (lines.length) {\n  text += lines.join(\"\\n\");\n}\n\nif (other.length) {\n  text += \"\\n\\n📝 Остальное:\\n\";\n  text += other.join(\"\\n\");\n}\nconsole.log(JSON.stringify(text));\nreturn [\n  {\n    json: {\n      reply: text,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        464
+      ],
+      "id": "da407225-3a26-4455-9887-d73b11701fa6",
+      "name": "Format All Memory1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.memories",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        32
+      ],
+      "id": "94562b22-4b54-4334-8228-772c9593c8b9",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  category: $json[\"output.memories\"].category,\n  key: $json[\"output.memories\"].key,\n  value: $json[\"output.memories\"].value,\n  memory_text: $json[\"output.memories\"].memory_text\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        32
+      ],
+      "id": "31b7149e-8715-4024-8e1e-a0c8c1b5c149",
+      "name": "Prepare Memory"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const m = $(\"Prepare Memory\").item.json;\n\nreturn {\n  user_id: $(\"Telegram Trigger\").item.json.message.chat.id,\n  category: m.category,\n  memory_key: m.key,\n  memory_value: m.value,\n  memory_text: m.memory_text,\n  embedding: JSON.stringify($json.data[0].embedding)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        32
+      ],
+      "id": "8cc6de65-ade6-4085-95d6-140356db2260",
+      "name": "Build Memory Record"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO user_memory\n(\n    user_id,\n    category,\n    memory_key,\n    memory_value,\n    memory_text,\n    embedding\n)\nVALUES\n(\n    {{ $json.user_id }},\n    '{{ $json.category.replace(/'/g, \"''\") }}',\n    '{{ $json.memory_key.replace(/'/g, \"''\") }}',\n    '{{ $json.memory_value.replace(/'/g, \"''\") }}',\n    '{{ $json.memory_text.replace(/'/g, \"''\") }}',\n    '{{ $json.embedding }}'::vector\n)\n\nON CONFLICT\n(\n    user_id,\n    category,\n    memory_key\n)\nDO UPDATE SET\n    memory_value = EXCLUDED.memory_value,\n    memory_text = EXCLUDED.memory_text,\n    embedding = EXCLUDED.embedding,\n    updated_at = NOW()\n\nRETURNING id;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        352,
+        32
+      ],
+      "id": "57f894fc-673e-4e4a-9e65-a5f63fb73ba6",
+      "name": "Save memory",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.memories",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        400
+      ],
+      "id": "e6f6dd62-5e33-44bf-8911-de1a7cc8eb7a",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    user_id,\n    category,\n    memory_key,\n    memory_value,\n    memory_text,\n    0.0 AS distance\nFROM user_memory\nWHERE\n    user_id = $1::text\n    AND memory_key = $2::text\nLIMIT 5;",
+        "options": {
+          "queryReplacement": "=={{\n[\n  $('Telegram Trigger').item.json.message.chat.id.toString(),\n  $json[\"output.keys\"]\n]\n}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        1072
+      ],
+      "id": "688e66af-b2c3-42b5-bae5-a0efb70c7490",
+      "name": "Keyword Recall",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        32,
+        1200
+      ],
+      "id": "b897a99a-470d-4df6-9873-b523e0da7c27",
+      "name": "Merge Recall"
+    },
+    {
+      "parameters": {
+        "jsCode": "const unique = new Map();\n\nfor (const item of $input.all()) {\n  const key = item.json.memory_key;\n\n  if (!unique.has(key)) {\n    unique.set(key, item);\n  }\n}\n\nreturn Array.from(unique.values()).slice(0, 10);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        1200
+      ],
+      "id": "3ff9a289-7594-444a-b496-96800bd7faac",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful Ты модуль определения ключей долговременной памяти AI-ассистента Jarvis.\n\nТвоя задача — определить, какие записи долговременной памяти могут понадобиться для ответа.\n\nВерни ТОЛЬКО JSON.\n\nФормат:\n\n{\n  \"keys\": [\n    \"name\"\n  ]\n}\n\nЕсли вопрос касается нескольких фактов, верни несколько ключей.\n\nПример:\n\nВопрос:\nКак меня зовут и где я живу?\n\nОтвет:\n\n{\n  \"keys\": [\n    \"name\",\n    \"city\"\n  ]\n}\n\nИспользуй только следующие ключи:\n\nname\nage\ncity\n\nspouse\n\npet_name\npet_type\npet_color\n\ndiabetes_type\ndiabetes_duration_years\n\nhobby\n\nЕсли вопрос не относится ни к одному ключу, верни\n\n{\n  \"keys\":[]\n}\n\nНикакого текста.\nНикаких объяснений.\nТолько JSON.assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -752,
+        1072
+      ],
+      "id": "b9f183d5-cd3f-4230-888e-2e283ef4378d",
+      "name": "Memory Key Classifier"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"keys\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\n    \"keys\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        1264
+      ],
+      "id": "1cc5f24b-763d-43bc-a565-aa2364f71609",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.keys",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        1072
+      ],
+      "id": "9adaee3d-8e93-49d1-83f7-040c87dbff96",
+      "name": "Split Keys"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -752,
+        1264
+      ],
+      "id": "2288f107-cd7b-439f-8205-13e2d126d249",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "jEwCBjLj1laD5Mo3",
+          "name": "OpenAI account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Forget memory?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Memory Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jarvis": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Memory": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Memory Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Save Memory?": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Memory Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jarvis Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Jarvis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jarvis Chat Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "Memory Classifier": {
+      "main": [
+        [
+          {
+            "node": "Should Save Memory?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recall Memory": {
+      "main": [
+        [
+          {
+            "node": "Merge Recall",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Generate Memory Embedding": {
+      "main": [
+        [
+          {
+            "node": "Build Memory Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Recall Memory",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Memory Key Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Context": {
+      "main": [
+        [
+          {
+            "node": "Jarvis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory Question?": {
+      "main": [
+        [
+          {
+            "node": "Load All Memory",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load All Memory": {
+      "main": [
+        [
+          {
+            "node": "Format All Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format All Memory": {
+      "main": [
+        [
+          {
+            "node": "Send Memory Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forget memory?": {
+      "main": [
+        [
+          {
+            "node": "Forget Memory Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Memory Question?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete memory": {
+      "main": [
+        [
+          {
+            "node": "Build Forget Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forget Memory Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Forget Memory Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Forget Memory": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Forget Memory Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forget Memory Classifier": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Forget Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Forget Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Prepare Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Memory": {
+      "main": [
+        [
+          {
+            "node": "Generate Memory Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Memory Record": {
+      "main": [
+        [
+          {
+            "node": "Save memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Delete memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Recall": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keyword Recall": {
+      "main": [
+        [
+          {
+            "node": "Merge Recall",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Memory Key Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory Key Classifier": {
+      "main": [
+        [
+          {
+            "node": "Split Keys",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Keys": {
+      "main": [
+        [
+          {
+            "node": "Keyword Recall",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Memory Key Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "30816b1c-b1c3-419f-aeec-418381971d4f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "38f1931b5ab70be69078dc5e78ef2631f8431b55ca7d6aff91d66e422d400a7b"
+  },
+  "nodeGroups": [],
+  "id": "f2uEgbbV1QqKjdEU",
+  "tags": []
+}
