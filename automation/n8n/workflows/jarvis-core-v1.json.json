@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.3,
       "position": [
-        -1104,
-        544
+        -1248,
+        496
       ],
       "id": "78b24068-e967-4268-91d8-1ac1bc023af8",
       "name": "Telegram Trigger",
@@ -29,14 +29,14 @@
         "promptType": "define",
         "text": "={{ $('Telegram Trigger').item.json.message.text }}",
         "options": {
-          "systemMessage": "=Ты — Джарвис, персональный ИИ-ассистент Алексея.\n\nВсегда отвечай на русском языке, если пользователь не попросит иначе.\n\nТвоя задача — помогать с программированием, DevOps, автоматизациями, администрированием серверов, разработкой проекта «Джарвис», а также с повседневными задачами.\n\nОтвечай точно, спокойно и лаконично.\n\nЕсли информации недостаточно — задай уточняющий вопрос.\n\nНе придумывай факты. Если чего-то не знаешь — прямо сообщи об этом.\n\nПри объяснении технических тем сначала объясняй идею, затем переходи к реализации.\n\nЕсли существует несколько вариантов решения, кратко опиши их и объясни, почему рекомендуешь конкретный.\n-------------------------\nДОЛГОВРЕМЕННАЯ ПАМЯТЬ ПОЛЬЗОВАТЕЛЯ\n\nНиже может быть предоставлена информация из долговременной памяти пользователя.\n\n{{ $json.memory_context }}\n\nИспользуй эту информацию только в том случае, если она относится к текущему вопросу пользователя.\n\nЕсли блок пустой, проигнорируй его.\n\nНе придумывай факты, которых нет в долговременной памяти."
+          "systemMessage": "={{ $json.jarvis_core }}\n\n-------------------------\nДОЛГОВРЕМЕННАЯ ПАМЯТЬ\n\n{{ $json.memory_context }}\n\nИспользуй память только тогда, когда она относится к текущему запросу.\n\nЕсли память отсутствует — проигнорируй этот раздел.\n\nНе придумывай факты, которых нет в памяти."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        448,
-        1200
+        784,
+        1296
       ],
       "id": "1ad70d7e-7aaa-4b57-baa6-605827f676ef",
       "name": "Jarvis"
@@ -130,8 +130,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        464,
-        1344
+        800,
+        1440
       ],
       "id": "eaa73745-ea15-4699-8b19-dd2ff2b918fd",
       "name": "Jarvis Model",
@@ -150,8 +150,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.4,
       "position": [
-        912,
-        848
+        1648,
+        816
       ],
       "id": "167d602c-2868-4887-a263-2b24eb838f2e",
       "name": "Jarvis Chat Memory",
@@ -215,8 +215,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        720,
-        1200
+        1056,
+        1296
       ],
       "id": "e5577c47-0c24-4960-a064-fcb51cc43c32",
       "name": "Send Reply",
@@ -298,13 +298,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const memories = $input.all();\n\nconst memoryContext = memories\n  .map(item => item.json.memory_text)\n  .filter(Boolean)\n  .join('\\n');\n\nreturn [\n  {\n    json: {\n      memory_context: memoryContext\n    }\n  }\n];"
+        "jsCode": "const items = $input.all();\n\nlet jarvisCore = '';\nconst memories = [];\n\nfor (const item of items) {\n\n  if (item.json.jarvis_core) {\n    jarvisCore = item.json.jarvis_core;\n  }\n\n  if (item.json.memory_text) {\n    memories.push(item.json.memory_text);\n  }\n\n}\n\nreturn [\n  {\n    json: {\n      jarvis_core: jarvisCore,\n      memory_context: memories.join('\\n')\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        320,
-        1200
+        608,
+        1296
       ],
       "id": "dbd03599-ba35-46d5-a5b8-f101d565ac88",
       "name": "Build Context"
@@ -336,8 +336,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -880,
-        896
+        -992,
+        880
       ],
       "id": "c94874af-5b4f-4916-b260-f105a5a25303",
       "name": "Memory Question?"
@@ -345,7 +345,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n    category,\n    memory_key,\n    memory_value,\n    created_at,\n    updated_at\nFROM user_memory\nWHERE user_id = $1::text\nORDER BY category, memory_key;",
+        "query": "SELECT\n    id,\n    category,\n    memory_key,\n    memory_value,\n    created_at,\n    updated_at\nFROM user_memory\nWHERE user_id = $1::text\nORDER BY category, memory_key;",
         "options": {
           "queryBatching": "single",
           "queryReplacement": "=={{ $('Telegram Trigger').item.json.message.chat.id }}"
@@ -354,8 +354,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -704,
-        880
+        -720,
+        864
       ],
       "id": "022b30cb-5888-4d04-b59e-0215f51e4444",
       "name": "Load All Memory",
@@ -369,13 +369,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const labels = {\n  name: \"👤 Имя\",\n  age: \"🎂 Возраст\",\n  diabetes_type: \"🩺 Диабет\",\n};\n\nconst valueMap = {\n  diabetes_type: {\n    \"type 1 diabetes\": \"1 типа\",\n    \"type 2 diabetes\": \"2 типа\",\n  },\n};\n\nconst lines = [];\nconst other = [];\n\nfor (const item of $input.all()) {\n  const key = item.json.memory_key;\n  const value = item.json.memory_value;\n\n  // Пропускаем пустые записи\n  if (!key || value === undefined || value === null || value === \"\") {\n    continue;\n  }\n\n  let displayValue = value;\n\n  if (valueMap[key] && valueMap[key][value]) {\n    displayValue = valueMap[key][value];\n  }\n\n  if (labels[key]) {\n    lines.push(`${labels[key]}: ${displayValue}`);\n  } else {\n    const safeKey = key.replaceAll(\"_\", \" \");\n    other.push(`• ${safeKey}: ${displayValue}`);\n  }\n}\n\nif (lines.length === 0 && other.length === 0) {\n  return [\n    {\n      json: {\n        reply: \"Пока я ничего о тебе не помню.\",\n      },\n    },\n  ];\n}\n\nlet text = \"Вот что я о тебе помню:\\n\\n\";\n\nif (lines.length) {\n  text += lines.join(\"\\n\");\n}\n\nif (other.length) {\n  text += \"\\n\\n📝 Остальное:\\n\";\n  text += other.join(\"\\n\");\n}\n\nreturn [\n  {\n    json: {\n      reply: text,\n    },\n  },\n];"
+        "jsCode": "const memories = $input.all().map(item => item.json);\n\n// --------------------\n// Профиль\n// --------------------\n\nconst profile = {\n  name: null,\n  age: null,\n  city: null,\n\n  spouse: null,\n\n  diabetes_type: null,\n  diabetes_duration_years: null,\n\n  hobbies: [],\n  pets: []\n};\n\n// --------------------\n// Вспомогательные функции\n// --------------------\n\nfunction getPet(index) {\n  if (!profile.pets[index]) {\n    profile.pets[index] = {};\n  }\n\n  return profile.pets[index];\n}\n\n// --------------------\n// Разбор памяти\n// --------------------\n\nfor (const memory of memories) {\n\n  const key = memory.memory_key;\n  const value = memory.memory_value;\n\n  if (!key || value === null || value === undefined || value === \"\") {\n    continue;\n  }\n\n  // ---------- Простые поля ----------\n\n  switch (key) {\n\n    case \"name\":\n      profile.name = value;\n      continue;\n\n    case \"age\":\n      profile.age = value;\n      continue;\n\n    case \"city\":\n      profile.city = value;\n      continue;\n\n    case \"spouse\":\n      profile.spouse = value;\n      continue;\n\n    case \"diabetes_type\":\n      profile.diabetes_type = value;\n      continue;\n\n    case \"diabetes_duration_years\":\n      profile.diabetes_duration_years = value;\n      continue;\n  }\n\n  // ---------- Хобби ----------\n\n  if (/^hobby(_\\d+)?$/.test(key)) {\n    profile.hobbies.push(value);\n    continue;\n  }\n\n  // ---------- Питомцы ----------\n\n  const petMatch = key.match(/^pet_(.+?)(?:_(\\d+))?$/);\n\n  if (petMatch) {\n\n    const field = petMatch[1];\n\n    const index = petMatch[2]\n      ? Number(petMatch[2]) - 1\n      : 0;\n\n    const pet = getPet(index);\n\n    pet[field] = value;\n\n    continue;\n  }\n\n}\n\n// --------------------\n// Формирование ответа\n// --------------------\n\nconst out = [];\n\nout.push(\"Вот что я о тебе помню:\");\n\nif (profile.name) {\n  out.push(\"\");\n  out.push(`👤 Имя: ${profile.name}`);\n}\n\nif (profile.age) {\n  out.push(`🎂 Возраст: ${profile.age}`);\n}\n\nif (profile.city) {\n  out.push(`🏙 Город: ${profile.city}`);\n}\n\nif (profile.spouse) {\n\n  out.push(\"\");\n  out.push(\"❤️ Семья\");\n  out.push(`• Жена: ${profile.spouse}`);\n\n}\n\nif (profile.pets.length) {\n\n  out.push(\"\");\n  out.push(\"🐱 Питомцы\");\n\n  for (const pet of profile.pets) {\n\n    if (!pet) continue;\n\n    out.push(\"\");\n\n    if (pet.type) {\n      out.push(`• ${pet.type}`);\n    }\n\n    if (pet.name) {\n      out.push(`  Имя: ${pet.name}`);\n    }\n\n    if (pet.color) {\n      out.push(`  Цвет: ${pet.color}`);\n    }\n\n    // Автоматически покажет любые новые поля питомца\n\n    for (const field of Object.keys(pet)) {\n\n      if ([\"type\", \"name\", \"color\"].includes(field)) {\n        continue;\n      }\n\n      const label = field.replaceAll(\"_\", \" \");\n\n      out.push(`  ${label}: ${pet[field]}`);\n\n    }\n\n  }\n\n}\n\nif (profile.diabetes_type || profile.diabetes_duration_years) {\n\n  out.push(\"\");\n  out.push(\"🩺 Здоровье\");\n\n  if (profile.diabetes_type) {\n\n    const map = {\n      \"1\": \"Диабет 1 типа\",\n      \"2\": \"Диабет 2 типа\"\n    };\n\n    out.push(`• ${map[profile.diabetes_type] ?? profile.diabetes_type}`);\n\n  }\n\n  if (profile.diabetes_duration_years) {\n    out.push(`• Стаж: ${profile.diabetes_duration_years} лет`);\n  }\n\n}\n\nif (profile.hobbies.length) {\n\n  out.push(\"\");\n  out.push(\"🎸 Хобби\");\n\n  for (const hobby of profile.hobbies) {\n    out.push(`• ${hobby}`);\n  }\n\n}\n\nif (out.length === 1) {\n\n  return [\n    {\n      json: {\n        reply: \"Пока я ничего о тебе не помню.\"\n      }\n    }\n  ];\n\n}\n\nreturn [\n  {\n    json: {\n      reply: out.join(\"\\n\")\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -544,
-        880
+        -560,
+        864
       ],
       "id": "77bf4c52-0252-4e90-a4ce-5b71396eca51",
       "name": "Format All Memory"
@@ -391,8 +391,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -400,
-        880
+        -416,
+        864
       ],
       "id": "b80be288-17d0-4a5f-ae96-1902ed101762",
       "name": "Send Memory Reply",
@@ -440,8 +440,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "DELETE FROM user_memory\nWHERE\n  user_id = '{{ $('Telegram Trigger').item.json.message.chat.id }}'\n    AND category = '{{ $json.category }}'\n    AND memory_key = '{{ $json.key }}'\n\nRETURNING id;",
-        "options": {}
+        "query": "DELETE FROM user_memory\nWHERE\n    user_id = $1::text\n    AND (\n        $2::text = '*'\n        OR memory_key = $2::text\n    );",
+        "options": {
+          "queryReplacement": "=={{[  $('Telegram Trigger').item.json.message.chat.id.toString(),  $json.memory_key]}}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -464,7 +466,7 @@
         "text": "={{ $('Telegram Trigger').item.json.message.text }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "Ты отвечаешь только одной JSON-структурой.\n\nТвоя задача — определить, просит ли пользователь удалить информацию из долговременной памяти.\n\nЕсли пользователь ничего не просит удалить, верни:\n\n{\n  \"delete\": false\n}\n\nЕсли пользователь просит удалить информацию, верни:\n\n{\n  \"delete\": true,\n  \"memories\": [\n    {\n      \"category\": \"...\",\n      \"key\": \"...\"\n    }\n  ]\n}\n\nЕсли пользователь просит удалить несколько фактов, добавь несколько объектов в массив \"memories\".\n\nИспользуй только категории:\n\n- Personal\n- Project\n- Health\n\nИспользуй только стандартные ключи памяти.\n\nСтандартные ключи:\n\n- name\n- age\n- city\n- country\n- profession\n- job\n- company\n- hobby\n- goal\n- project\n- language\n- diabetes_type\n\nПравила:\n\n- Если пользователь просит забыть имя → key = \"name\"\n- Если просит забыть возраст → key = \"age\"\n- Если просит забыть диабет, диабет первого типа или диабет 1 типа → key = \"diabetes_type\"\n- Если просит забыть проект → key = \"project\"\n- Если пользователь просит забыть несколько вещей — верни массив memories со всеми найденными объектами.\n- Если подходящего ключа нет — придумай короткий ключ на английском языке в snake_case.\n- Никогда не используй русские названия ключей.\n- Никакого текста вне JSON."
+          "systemMessage": "Ты анализируешь сообщение пользователя и определяешь, какие записи памяти необходимо удалить.\n\nВерни ТОЛЬКО JSON.\n\nФормат:\n\n{\n  \"keys\": [\n    {\n      \"memory_key\": \"city\"\n    }\n  ]\n}\n\nПравила:\n\n1. Если пользователь просит забыть конкретный факт:\n   \"Забудь мой город\"\n   →\n   {\n     \"keys\":[\n       {\n         \"memory_key\":\"city\"\n       }\n     ]\n   }\n\n2. Если пользователь просит забыть несколько фактов:\n   \"Забудь как зовут жену и кота\"\n   →\n   {\n     \"keys\":[\n       {\n         \"memory_key\":\"spouse\"\n       },\n       {\n         \"memory_key\":\"pet_name\"\n       }\n     ]\n   }\n\n3. Используй только существующие ключи памяти.\n\nДопустимые ключи:\n\nname\nage\ncity\n\nspouse\n\npet_name\npet_type\npet_color\n\ndiabetes_type\ndiabetes_duration_years\n\nhobby\nhobby_2\nhobby_3\n\n4. Если подходящего ключа нет, используй наиболее подходящий существующий.\n\n5. Если пользователь просит забыть всё:\n{\n  \"keys\":[\n    {\n      \"memory_key\":\"*\"\n    }\n  ]\n}\n\nНикакого текста.\nТолько JSON."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -505,7 +507,7 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"delete\": {\n      \"type\": \"boolean\"\n    },\n    \"memories\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"category\": {\n            \"type\": \"string\"\n          },\n          \"key\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"category\",\n          \"key\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"delete\"\n  ]\n}"
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"keys\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"memory_key\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"memory_key\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"keys\"\n  ]\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
@@ -518,7 +520,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $('Split Out1').all();\n\nconst labels = {\n  name: \"имя\",\n  age: \"возраст\",\n  city: \"город\",\n  country: \"страну\",\n  profession: \"профессию\",\n  job: \"работу\",\n  company: \"компанию\",\n  hobby: \"хобби\",\n  goal: \"цель\",\n  project: \"проект\",\n  language: \"язык\",\n  diabetes_type: \"диабет первого типа\"\n};\n\nconst deleted = items.map(item => {\n  const key = item.json.key;\n  return labels[key] ?? key;\n});\n\nconst reply = deleted.length === 1\n  ? `Хорошо. Я забыл ${deleted[0]}.`\n  : `Хорошо. Я забыл: ${deleted.join(\", \")}.`;\n\nreturn [\n  {\n    json: {\n      reply\n    }\n  }\n];"
+        "jsCode": "const items = $('Split Out1').all();\n\nconst labels = {\n  \"*\": \"всё, что знал о тебе\",\n\n  name: \"имя\",\n  age: \"возраст\",\n  city: \"город\",\n\n  spouse: \"имя жены\",\n\n  pet_name: \"имя питомца\",\n  pet_type: \"тип питомца\",\n  pet_color: \"цвет питомца\",\n\n  diabetes_type: \"диабет первого типа\",\n  diabetes_duration_years: \"стаж диабета\",\n\n  hobby: \"хобби\",\n  hobby_2: \"второе хобби\",\n  hobby_3: \"третье хобби\"\n};\n\nconst deleted = items.map(item => {\n  const key = item.json.memory_key;\n  return labels[key] ?? key;\n});\n\nlet reply;\n\nif (deleted.includes(\"всё, что знал о тебе\")) {\n  reply = \"Хорошо. Я забыл всё, что знал о тебе.\";\n} else if (deleted.length === 1) {\n  reply = `Хорошо. Я забыл ${deleted[0]}.`;\n} else {\n  reply = `Хорошо. Я забыл: ${deleted.join(\", \")}.`;\n}\n\nreturn [\n  {\n    json: {\n      reply\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -555,34 +557,13 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT *\nFROM user_memory\nWHERE memory_key = 'city';",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        928,
-        624
-      ],
-      "id": "cbf3f691-cf43-43f6-b9ca-03b76662634e",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const labels = {\n  name: \"👤 Имя\",\n  age: \"🎂 Возраст\",\n};\n\nconst lines = [];\nconst other = [];\n\nfor (const item of $input.all()) {\n  const key = item.json.memory_key;\n  const value = item.json.memory_value;\n\n  // Пропускаем пустые записи\n  if (!key || value === undefined || value === null || value === \"\") {\n    continue;\n  }\n\n  if (labels[key]) {\n    lines.push(`${labels[key]}: ${value}`);\n  } else {\n    other.push(`• ${key}: ${value}`);\n  }\n}\n\nif (lines.length === 0 && other.length === 0) {\n  return [\n    {\n      json: {\n        reply: \"Пока я ничего о тебе не помню.\",\n      },\n    },\n  ];\n}\n\nlet text = \"Вот что я о тебе помню:\\n\\n\";\n\nif (lines.length) {\n  text += lines.join(\"\\n\");\n}\n\nif (other.length) {\n  text += \"\\n\\n📝 Остальное:\\n\";\n  text += other.join(\"\\n\");\n}\nconsole.log(JSON.stringify(text));\nreturn [\n  {\n    json: {\n      reply: text,\n    },\n  },\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        928,
-        464
+        1664,
+        432
       ],
       "id": "da407225-3a26-4455-9887-d73b11701fa6",
       "name": "Format All Memory1"
@@ -596,8 +577,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -256,
-        32
+        -288,
+        -16
       ],
       "id": "94562b22-4b54-4334-8228-772c9593c8b9",
       "name": "Split Out"
@@ -653,7 +634,7 @@
     },
     {
       "parameters": {
-        "fieldToSplitOut": "output.memories",
+        "fieldToSplitOut": "output.keys",
         "options": {}
       },
       "type": "n8n-nodes-base.splitOut",
@@ -693,8 +674,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        32,
-        1200
+        -192,
+        1296
       ],
       "id": "b897a99a-470d-4df6-9873-b523e0da7c27",
       "name": "Merge Recall"
@@ -706,8 +687,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        176,
-        1200
+        -48,
+        1296
       ],
       "id": "3ff9a289-7594-444a-b496-96800bd7faac",
       "name": "Remove Duplicates"
@@ -782,6 +763,72 @@
         "openAiApi": {
           "id": "jEwCBjLj1laD5Mo3",
           "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const memories = $input.all();\n\nconst question = $('Telegram Trigger')\n  .item.json.message.text\n  .toLowerCase();\n\nconst result = [];\n\n// Если пользователь просит показать всё\nconst showAllPatterns = [\n  \"что ты обо мне знаешь\",\n  \"что ты помнишь\",\n  \"покажи память\",\n  \"моя память\",\n  \"мой профиль\"\n];\n\nconst showAll = showAllPatterns.some(p => question.includes(p));\n\nif (showAll) {\n  return memories.slice(0, 10);\n}\n\n// Ключевые слова -> префиксы memory_key\n\nconst groups = [\n  {\n    words: [\"кот\", \"кошка\", \"питом\", \"сема\", \"сёма\"],\n    prefixes: [\"pet_\"]\n  },\n  {\n    words: [\"диабет\", \"здоров\"],\n    prefixes: [\"diabetes_\"]\n  },\n  {\n    words: [\"хобби\", \"люблю\", \"увлека\"],\n    prefixes: [\"hobby\"]\n  },\n  {\n    words: [\"жена\", \"супруга\", \"семья\"],\n    prefixes: [\"spouse\"]\n  },\n  {\n    words: [\"город\", \"живу\", \"адрес\"],\n    prefixes: [\"city\"]\n  },\n  {\n    words: [\"возраст\", \"лет\"],\n    prefixes: [\"age\"]\n  },\n  {\n    words: [\"имя\", \"зовут\"],\n    prefixes: [\"name\"]\n  }\n];\n\nlet matchedPrefixes = [];\n\nfor (const group of groups) {\n  if (group.words.some(w => question.includes(w))) {\n    matchedPrefixes.push(...group.prefixes);\n  }\n}\n\nif (matchedPrefixes.length === 0) {\n  return memories.slice(0, 10);\n}\n\nfor (const item of memories) {\n\n  const key = item.json.memory_key;\n\n  if (\n    matchedPrefixes.some(prefix => key.startsWith(prefix))\n  ) {\n    result.push(item);\n  }\n\n}\n\nreturn result.length\n  ? result\n  : memories.slice(0, 10);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        1296
+      ],
+      "id": "a7c18719-aeaa-42e0-9d62-162cc89d26dc",
+      "name": "Smart Recall Filter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS jarvis_config (\n    id SERIAL PRIMARY KEY,\n    config_key TEXT UNIQUE NOT NULL,\n    config_value TEXT NOT NULL,\n    updated_at TIMESTAMP DEFAULT NOW()\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1680,
+        624
+      ],
+      "id": "962fb70b-5cf6-4a1b-84a5-358b8e6f4909",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        1296
+      ],
+      "id": "ad96e3fc-dade-42fa-b5b6-f2021e856db1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    string_agg(config_value, E'\\n\\n' ORDER BY\n        CASE config_key\n            WHEN 'identity' THEN 1\n            WHEN 'principles' THEN 2\n            WHEN 'response_style' THEN 3\n            WHEN 'system_prompt' THEN 4\n            ELSE 100\n        END\n    ) AS jarvis_core\nFROM jarvis_config;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        272,
+        1392
+      ],
+      "id": "cbf3f691-cf43-43f6-b9ca-03b76662634e",
+      "name": "Load Jarvis Core",
+      "credentials": {
+        "postgres": {
+          "id": "uJciY97y2U2NFX18",
+          "name": "Postgres account"
         }
       }
     }
@@ -1107,7 +1154,7 @@
       "main": [
         [
           {
-            "node": "Build Context",
+            "node": "Smart Recall Filter",
             "type": "main",
             "index": 0
           }
@@ -1157,6 +1204,44 @@
           }
         ]
       ]
+    },
+    "Smart Recall Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Load Jarvis Core",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Jarvis Core": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1165,7 +1250,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "30816b1c-b1c3-419f-aeec-418381971d4f",
+  "versionId": "83b60e9c-6fda-407d-a139-ff60b6f3081d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "38f1931b5ab70be69078dc5e78ef2631f8431b55ca7d6aff91d66e422d400a7b"
