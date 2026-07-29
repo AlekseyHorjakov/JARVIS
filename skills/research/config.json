@@ -1,0 +1,21 @@
+{
+  "id": "research",
+  "name": "Research",
+  "version": "1.0.0",
+  "enabled": true,
+
+  "description": "Поиск, анализ и структурирование информации.",
+
+  "entry_prompt": "prompt.md",
+  "entry_skill": "skill.md",
+
+  "required_tools": [
+    "web"
+  ],
+
+  "tags": [
+    "research",
+    "analysis",
+    "search"
+  ]
+}

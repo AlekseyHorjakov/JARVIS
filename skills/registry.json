@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-07-28",
+  "skills": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "description": "Работа с репозиториями, коммитами, Pull Request и Issues.",
+      "version": "1.0.0",
+      "enabled": true
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "description": "Управление Docker и Docker Compose.",
+      "version": "1.0.0",
+      "enabled": true
+    },
+    {
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "description": "Работа с PostgreSQL и pgvector.",
+      "version": "1.0.0",
+      "enabled": true
+    },
+    {
+      "id": "server",
+      "name": "Server",
+      "description": "Администрирование Ubuntu Server.",
+      "version": "1.0.0",
+      "enabled": true
+    },
+    {
+      "id": "research",
+      "name": "Research",
+      "description": "Поиск, анализ и структурирование информации.",
+      "version": "1.0.0",
+      "enabled": true
+    },
+    {
+      "id": "diabetes",
+      "name": "Diabetes",
+      "description": "Помощь при диабете первого типа.",
+      "version": "1.0.0",
+      "enabled": false
+    }
+  ]
+}
