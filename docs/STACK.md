@@ -1,34 +1,82 @@
 # Технологический стек JARVIS
 
-## AI
+Документ содержит перечень технологий, используемых в проекте JARVIS.
+
+---
+
+# AI
 
 - OpenAI API
+- OpenAI GPT-4.1 Mini
+- OpenAI Embeddings
 
-## Автоматизация
+---
+
+# Автоматизация
 
 - n8n
 
-## База данных
+---
+
+# База данных
 
 - PostgreSQL 17
 - pgvector
 
-## Backend
+---
+
+# Backend
 
 - JavaScript
 
-## Инфраструктура
+---
+
+# Инфраструктура
 
 - Docker
 - Docker Compose
 - Ubuntu Server 24.04 LTS
 - Caddy
 
-## Интерфейсы
+---
+
+# Интерфейсы
 
 - Telegram Bot API
 
-## Инструменты разработки
+---
+
+# Поиск и инструменты
+
+- SearXNG
+- Docker Tool
+- SSH Tool
+
+---
+
+# Архитектурные компоненты
+
+- Input Gateway
+- Intent Router
+- JARVIS Core
+- Long-Term Memory v2
+- Smart Recall Filter
+- Hybrid Recall
+- Semantic Ontology
+
+---
+
+# Хранение данных
+
+- PostgreSQL (`jarvis_config`)
+- Long-Term Memory
+- `memory_ontology`
+- `memory_ontology_aliases`
+- pgvector Embeddings
+
+---
+
+# Инструменты разработки
 
 - Git
 - GitHub

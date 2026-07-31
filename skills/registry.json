@@ -3,11 +3,11 @@
   "updated": "2026-07-28",
   "skills": [
     {
-      "id": "github",
-      "name": "GitHub",
-      "description": "Работа с репозиториями, коммитами, Pull Request и Issues.",
+      "id": "diabetes",
+      "name": "Diabetes",
+      "description": "Поддержка пользователей с сахарным диабетом 1 типа.",
       "version": "1.0.0",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "docker",
@@ -17,32 +17,32 @@
       "enabled": true
     },
     {
-      "id": "postgres",
-      "name": "PostgreSQL",
-      "description": "Работа с PostgreSQL и pgvector.",
+      "id": "github",
+      "name": "GitHub",
+      "description": "Работа с репозиториями GitHub, коммитами, Pull Request и Issues.",
       "version": "1.0.0",
       "enabled": true
     },
     {
-      "id": "server",
-      "name": "Server",
-      "description": "Администрирование Ubuntu Server.",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "description": "Работа с PostgreSQL и расширением pgvector.",
       "version": "1.0.0",
       "enabled": true
     },
     {
       "id": "research",
       "name": "Research",
-      "description": "Поиск, анализ и структурирование информации.",
+      "description": "Поиск, анализ, сравнение и структурирование информации.",
       "version": "1.0.0",
       "enabled": true
     },
     {
-      "id": "diabetes",
-      "name": "Diabetes",
-      "description": "Помощь при диабете первого типа.",
+      "id": "server",
+      "name": "Server",
+      "description": "Администрирование серверов под управлением Ubuntu.",
       "version": "1.0.0",
-      "enabled": false
+      "enabled": true
     }
   ]
 }

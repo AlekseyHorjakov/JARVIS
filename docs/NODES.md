@@ -1,17 +1,34 @@
 # Узлы JARVIS
 
-| № | Узел | Статус |
-|---|------|--------|
-| 1 | Telegram Trigger | ✅ |
-| 2 | Memory Classifier | ✅ |
-| 3 | Should Save Memory? | ✅ |
-| 4 | Prepare Memory | ✅ |
-| 5 | Generate Memory Embedding | ✅ |
-| 6 | Build Memory Record | ✅ |
-| 7 | Save Memory | ✅ |
-| 8 | Forget Memory | ✅ |
-| 9 | Recall Memory | ✅ |
-|10 | Keyword Recall | ✅ |
-|11 | Build Context | ✅ |
-|12 | Jarvis | ✅ |
-|13 | Send Reply | ✅ |
+Документ содержит перечень основных узлов текущего workflow JARVIS.
+
+| №   | Узел                      | Назначение                                               | Статус |
+| --- | ------------------------- | -------------------------------------------------------- | :----: |
+| 1   | Telegram Trigger          | Приём входящих сообщений из Telegram                     |   ✅   |
+| 2   | Input Gateway             | Приведение входящих данных к единому внутреннему формату |   ✅   |
+| 3   | Intent Router             | Определение сценария обработки запроса                   |   ✅   |
+| 4   | Memory Classifier         | AI-классификация новой информации                        |   ✅   |
+| 5   | Should Save Memory?       | Решение о необходимости сохранения памяти                |   ✅   |
+| 6   | Prepare Memory            | Подготовка структуры записи памяти                       |   ✅   |
+| 7   | Resolve Ontology          | Поиск или создание понятия в онтологии                   |   ✅   |
+| 8   | Generate Memory Embedding | Генерация векторного представления                       |   ✅   |
+| 9   | Save Memory               | Сохранение воспоминания в PostgreSQL                     |   ✅   |
+| 10  | Forget Memory             | Удаление воспоминаний                                    |   ✅   |
+| 11  | Keyword Recall            | Поиск по ключевым словам                                 |   ✅   |
+| 12  | Vector Recall             | Семантический поиск через pgvector                       |   ✅   |
+| 13  | Merge Recall              | Объединение результатов поиска                           |   ✅   |
+| 14  | Smart Recall Filter       | Отбор наиболее релевантной памяти                        |   ✅   |
+| 15  | Load JARVIS Core          | Загрузка ядра личности                                   |   ✅   |
+| 16  | Build Context             | Формирование полного контекста                           |   ✅   |
+| 17  | AI Agent                  | Генерация ответа и вызов инструментов                    |   ✅   |
+| 18  | Memory Tool               | Работа с долговременной памятью                          |   ✅   |
+| 19  | SearXNG Tool              | Интернет-поиск                                           |   ✅   |
+| 20  | Docker Tool               | Управление Docker                                        |   ✅   |
+| 21  | SSH Tool                  | Выполнение команд по SSH                                 |   ✅   |
+| 22  | Telegram Reply            | Отправка ответа пользователю                             |   ✅   |
+
+---
+
+## Статус
+
+🟢 Актуально для **JARVIS Core v1** с архитектурой **Long-Term Memory v2** и поддержкой **Tool Calling**.
