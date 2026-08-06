@@ -12,13 +12,6 @@ DB_CONFIG = {
     "password": ""
 }
 
-FILES = {
-    "identity": "identity.md",
-    "principles": "principles.md",
-    "response_style": "response_style.md",
-    "system_prompt": "system_prompt.md",
-}
-
 
 def deploy():
 
@@ -37,19 +30,20 @@ def deploy():
                 );
             """)
 
-            for key, filename in FILES.items():
+            md_files = sorted(CORE_DIR.glob("*.md"))
 
-                path = CORE_DIR / filename
+            if not md_files:
+                print("❌ No markdown files found in core/")
+                return
 
-                if not path.exists():
-                    print(f"❌ {filename} not found")
-                    continue
+            for path in md_files:
 
+                key = path.stem
                 text = path.read_text(encoding="utf-8")
 
                 cur.execute("""
                     INSERT INTO jarvis_config(config_key, config_value)
-                    VALUES (%s,%s)
+                    VALUES (%s, %s)
                     ON CONFLICT(config_key)
                     DO UPDATE SET
                         config_value = EXCLUDED.config_value,
@@ -60,7 +54,7 @@ def deploy():
 
     conn.close()
 
-    print("\nDone.")
+    print("\n✅ Core deployed successfully.")
 
 
 if __name__ == "__main__":
