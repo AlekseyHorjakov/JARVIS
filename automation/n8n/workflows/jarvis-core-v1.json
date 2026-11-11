@@ -15,14 +15,7 @@
         96
       ],
       "id": "b2cbb350-27fa-45a5-b132-236a341243d4",
-      "name": "Telegram Trigger",
-      "webhookId": "5bf135a5-97b3-47a3-972f-5192a048f1d2",
-      "credentials": {
-        "telegramApi": {
-          "id": "lmT8SIbfm6wk21vr",
-          "name": "Telegram account"
-        }
-      }
+      "name": "Telegram Trigger"
     },
     {
       "parameters": {
@@ -109,13 +102,7 @@
         688
       ],
       "id": "d6b2c958-d0dc-49aa-a800-5dbf7116a612",
-      "name": "Memory Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "jEwCBjLj1laD5Mo3",
-          "name": "OpenAI account"
-        }
-      }
+      "name": "Memory Model"
     },
     {
       "parameters": {
@@ -135,13 +122,7 @@
         1056
       ],
       "id": "83fc5ca7-99a7-42ca-b98c-472b13825b65",
-      "name": "Jarvis Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "jEwCBjLj1laD5Mo3",
-          "name": "OpenAI account"
-        }
-      }
+      "name": "Jarvis Model"
     },
     {
       "parameters": {
@@ -159,13 +140,7 @@
       ],
       "id": "34a3bdad-701c-40b2-a58b-c4f5b01356d4",
       "name": "Recall Memory",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -200,14 +175,7 @@
         912
       ],
       "id": "74e6ed5c-f60d-4154-adfd-2dbf98616c2c",
-      "name": "Send Reply",
-      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
-      "credentials": {
-        "telegramApi": {
-          "id": "lmT8SIbfm6wk21vr",
-          "name": "Telegram account"
-        }
-      }
+      "name": "Send Reply"
     },
     {
       "parameters": {
@@ -235,13 +203,7 @@
         528
       ],
       "id": "50d0d5a3-8026-46f9-82f6-8367145b2b3d",
-      "name": "Generate Memory Embedding",
-      "credentials": {
-        "httpBearerAuth": {
-          "id": "FSVMcSm3zRbYw9y7",
-          "name": "Bearer Auth account"
-        }
-      }
+      "name": "Generate Memory Embedding"
     },
     {
       "parameters": {
@@ -269,13 +231,7 @@
         800
       ],
       "id": "7b51eac0-54d9-4b8d-9fea-97e2ca4b268a",
-      "name": "Generate Query Embedding",
-      "credentials": {
-        "httpBearerAuth": {
-          "id": "FSVMcSm3zRbYw9y7",
-          "name": "Bearer Auth account"
-        }
-      }
+      "name": "Generate Query Embedding"
     },
     {
       "parameters": {
@@ -307,13 +263,7 @@
       ],
       "id": "263cbaf2-c64e-44ea-b0d5-eec87853bea0",
       "name": "Load All Memory",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -343,14 +293,7 @@
         448
       ],
       "id": "4bfcf815-9c37-412b-bc22-be73e50dd665",
-      "name": "Send Memory Reply",
-      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
-      "credentials": {
-        "telegramApi": {
-          "id": "lmT8SIbfm6wk21vr",
-          "name": "Telegram account"
-        }
-      }
+      "name": "Send Memory Reply"
     },
     {
       "parameters": {
@@ -367,13 +310,7 @@
         16
       ],
       "id": "1d672653-6121-49e6-b1be-ea45629baa60",
-      "name": "Delete memory",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "name": "Delete memory"
     },
     {
       "parameters": {
@@ -411,13 +348,7 @@
         192
       ],
       "id": "7931a429-3eda-47dc-bfee-802b7e79e99b",
-      "name": "Forget Memory Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "jEwCBjLj1laD5Mo3",
-          "name": "OpenAI account"
-        }
-      }
+      "name": "Forget Memory Model"
     },
     {
       "parameters": {
@@ -461,14 +392,7 @@
         16
       ],
       "id": "fd5d23bb-edf0-4b8d-ab5a-6381806dfd49",
-      "name": "Send Forget Reply",
-      "webhookId": "c21571d2-4778-446d-8b9f-41f012eefd96",
-      "credentials": {
-        "telegramApi": {
-          "id": "lmT8SIbfm6wk21vr",
-          "name": "Telegram account"
-        }
-      }
+      "name": "Send Forget Reply"
     },
     {
       "parameters": {
@@ -511,13 +435,7 @@
         528
       ],
       "id": "7ce8b8d9-2a78-4652-8058-d1a95623a584",
-      "name": "Save memory",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "name": "Save memory"
     },
     {
       "parameters": {
@@ -534,13 +452,7 @@
         688
       ],
       "id": "c99447c2-d94c-43db-b97d-a509248e4308",
-      "name": "Keyword Recall",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "name": "Keyword Recall"
     },
     {
       "parameters": {},
@@ -625,13 +537,7 @@
         1008
       ],
       "id": "d3ff6d91-a067-4779-a8a2-5968e6405847",
-      "name": "Load Jarvis Core",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "name": "Load Jarvis Core"
     },
     {
       "parameters": {
@@ -644,13 +550,7 @@
         1168
       ],
       "id": "1595aec4-dbf2-455e-8eab-fc3ce062a4e6",
-      "name": "SearXNG",
-      "credentials": {
-        "searXngApi": {
-          "id": "BtUwQ5XBGKxRxPvH",
-          "name": "SearXNG account"
-        }
-      }
+      "name": "SearXNG"
     },
     {
       "parameters": {},
@@ -724,13 +624,7 @@
         880
       ],
       "id": "aa6921bd-0d1d-4989-94fd-798fae1e44f9",
-      "name": "Memory Key Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "jEwCBjLj1laD5Mo3",
-          "name": "OpenAI account"
-        }
-      }
+      "name": "Memory Key Model"
     },
     {
       "parameters": {
@@ -1080,69 +974,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n    id,\n    owner,\n    category,\n    memory_key,\n    memory_value,\n    confidence\nFROM user_memory\nORDER BY id;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3408,
-        1072
-      ],
-      "id": "b52f5609-10ad-4152-b00a-35f56004129a",
-      "name": "Removed test node",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "TRUNCATE TABLE user_memory RESTART IDENTITY;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3584,
-        1088
-      ],
-      "id": "bb9a95f4-725b-461d-a521-90968db99f31",
-      "name": "Удалить тестовые данные",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SHOW plpgsql.variable_conflict;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3168,
-        1056
-      ],
-      "id": "493d1a17-ae58-4d33-b27a-cf247dc8cdd1",
-      "name": "Removed test node",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combineBy": "combineByPosition",
         "options": {}
@@ -1171,16 +1002,9 @@
         528
       ],
       "id": "0beed425-4be3-4d06-81c5-1325896a9222",
-      "name": "Resolve Ontology",
-      "credentials": {
-        "postgres": {
-          "id": "uJciY97y2U2NFX18",
-          "name": "Postgres account"
-        }
-      }
+      "name": "Resolve Ontology"
     }
   ],
-  "pinData": {},
   "connections": {
     "Telegram Trigger": {
       "main": [
@@ -1680,12 +1504,5 @@
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
-  },
-  "versionId": "7f4273ff-410e-476d-a61b-ddec0a826d9b",
-  "meta": {
-    "instanceId": "38f1931b5ab70be69078dc5e78ef2631f8431b55ca7d6aff91d66e422d400a7b"
-  },
-  "nodeGroups": [],
-  "id": "WzILBOXtwGv4XKly",
-  "tags": []
+  }
 }
